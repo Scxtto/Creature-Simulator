@@ -1,0 +1,158 @@
+.settings-container {
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  gap: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.settings-group {
+  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  height: 35px;
+}
+
+.settings-group input {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+  margin-right: 10px;
+  grid-column: span 2;
+}
+
+.settings-group button {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.popup-settings {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  width: 1500px; /* Increased width for more data */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.popup-inner-settings {
+  padding: 20px;
+}
+
+.popup-inner-settings h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.popup-inner-settings ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popup-inner-settings .history-table-header,
+.popup-inner-settings .history-row {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1.5fr 1fr 1fr 1.5fr 1fr 1fr 1fr; /* Ensure matching column widths */
+  padding: 4px 0;
+  text-align: center;
+}
+
+.popup-inner-settings .history-item-header {
+  font-weight: bold;
+  cursor: pointer;
+  border-bottom: 2px solid #ccc;
+}
+
+.popup-inner-settings .history-row {
+  border-bottom: 1px solid #eee;
+}
+
+.popup-inner-settings .history-table-body span,
+.popup-inner-settings .history-item-header span {
+  padding: 4px;
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popup-inner-settings .history-table-body {
+  text-align: left;
+}
+
+.popup-inner-settings button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup-inner-settings button:hover {
+  background-color: #0056b3;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.page-item {
+  padding: 5px 10px;
+  margin: 0 5px;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.page-item.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.page-item:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.page-item:hover:not(:disabled) {
+  background-color: #0056b3;
+  color: white;
+}
