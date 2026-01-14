@@ -1,2 +1,15 @@
 web/node_modules/*
 web/build/*
+publicMicro/node_modules/*
+simMicro/node_modules/*
+cpp_sim/.vs/*
+cpp_sim/build/*
+cpp_sim/bin/*
+cpp_sim/*.vcxproj*
+cpp_sim/*.sln
+cpp_sim/*.user
+cpp_sim/CreatureSim/x64/Debug/*
+cpp_sim/CreatureSim/x64/Release/*
+
+cpp_sim/data/*
+cpp_sim/x64/Debug/*
