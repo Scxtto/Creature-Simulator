@@ -8,6 +8,12 @@
   gap: 20px;
 }
 
+.page-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
 h1 {
   text-align: center;
   color: #333;

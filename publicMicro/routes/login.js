@@ -1,57 +1,46 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
-const {
-  CognitoIdentityProviderClient,
-  InitiateAuthCommand,
-} = require("@aws-sdk/client-cognito-identity-provider");
 
-const { getClientId } = require("../utility/secretHandler");
+const { getAccounts } = require("../utility/getAccounts");
 
-const client = new CognitoIdentityProviderClient({ region: "ap-southeast-2" });
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
+const TOKEN_DURATION_SECONDS = Number(process.env.JWT_DURATION_SECONDS || 3600);
 
 // Route to login a user
-router.post("/", async (req, res) => {
-  //console.log("Logging in user: ", req.body);
+router.post("/", (req, res) => {
   const { email, password } = req.body;
-  const clientId = await getClientId();
-  //console.log("Using password: ", password);
-  //console.log("Using client ID: ", clientId);
 
-  const command = new InitiateAuthCommand({
-    AuthFlow: "USER_PASSWORD_AUTH", // Standard auth flow for user/password
-    ClientId: clientId,
-    AuthParameters: {
-      USERNAME: email,
-      PASSWORD: password,
-    },
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  let accounts;
+  try {
+    accounts = getAccounts();
+  } catch (error) {
+    console.error("Error reading accounts:", error);
+    return res.status(500).json({ message: "Unable to load accounts" });
+  }
+
+  const account = accounts.find((user) => user.email === email && user.password === password);
+  if (!account) {
+    return res.status(401).json({ message: "Invalid email or password" });
+  }
+
+  const isAdmin = Boolean(account.isAdmin || account.role === "admin");
+  const role = account.role || (isAdmin ? "admin" : "user");
+
+  const token = jwt.sign({ email, role, isAdmin }, JWT_SECRET, {
+    expiresIn: TOKEN_DURATION_SECONDS,
   });
 
-  try {
-    const response = await client.send(command);
-    //console.log("Login successful:", response);
-
-    // Check if a challenge is returned
-    if (response.ChallengeName) {
-      // If there's a challenge (e.g., MFA_SETUP, SMS_MFA), return it to the client
-      res.status(200).json({
-        ChallengeName: response.ChallengeName,
-        ChallengeParameters: response.ChallengeParameters,
-        Session: response.Session, // The session is needed to complete the challenge
-      });
-    } else {
-      // The response contains tokens, including an ID token, access token, and refresh token
-      res.status(200).json({
-        idToken: response.AuthenticationResult.IdToken,
-        accessToken: response.AuthenticationResult.AccessToken,
-        refreshToken: response.AuthenticationResult.RefreshToken,
-        token_type: "Bearer",
-        expires_in: response.AuthenticationResult.ExpiresIn,
-      });
-    }
-  } catch (err) {
-    console.error("Error logging in:", err);
-    res.status(401).json({ message: "Invalid email or password" });
-  }
+  return res.status(200).json({
+    token,
+    token_type: "Bearer",
+    duration: TOKEN_DURATION_SECONDS,
+    isAdmin,
+  });
 });
 
 module.exports = router;

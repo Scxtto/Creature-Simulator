@@ -13,3 +13,6 @@ cpp_sim/CreatureSim/x64/Release/*
 
 cpp_sim/data/*
 cpp_sim/x64/Debug/*
+publicMicro/output/*
+publicMicro/storage/*
+

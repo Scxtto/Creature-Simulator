@@ -86,9 +86,10 @@ export const startSimulation = async (simulationSettings, creatures, navigate) =
 // Function to handle user login
 // It posts the login credentials and sets the user email if login is successful
 export const handleLogin = async (email, setUserEmail, password) => {
-  const loginSuccessful = await loginPost(email, password);
+  const loginResult = await loginPost(email, password);
 
-  if (loginSuccessful) {
+  if (loginResult && loginResult.token) {
+    localStorage.setItem("token", loginResult.token);
     setUserEmail(email); // Set the user email upon successful login
     console.log("Logged in successfully with:", email);
   } else {

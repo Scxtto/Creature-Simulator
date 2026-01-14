@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const accountsFilePath = path.join(__dirname, "../storage/accounts.json");
+const accountsFilePath = path.join(__dirname, "accounts.json");
 
 function readAccounts() {
   const data = fs.readFileSync(accountsFilePath, "utf-8");

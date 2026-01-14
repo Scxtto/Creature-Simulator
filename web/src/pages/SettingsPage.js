@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./SettingsPage.css";
 import { getHistory, addAccount, updateAccount, deleteAccount } from "../util/adminCalls";
 
@@ -103,6 +104,11 @@ const SettingsPage = () => {
 
   return (
     <div className="settings-container">
+      <div className="page-actions">
+        <Link to="/" className="header-button">
+          Back to Setup
+        </Link>
+      </div>
       <h1>Account Management</h1>
       <div className="settings-group">
         <input

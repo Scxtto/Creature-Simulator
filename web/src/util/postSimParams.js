@@ -1,10 +1,10 @@
 export const postSimParams = async (simulationParams) => {
   try {
     console.log(simulationParams);
-    const idToken = localStorage.getItem("idToken");
+    const token = localStorage.getItem("token");
     const headers = { "Content-Type": "application/json" };
-    if (idToken) {
-      headers["Authorization"] = `Bearer ${idToken}`;
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
     }
     const URL = process.env.REACT_APP_API_URI;
     const response = await fetch(`${URL}:5443/simulate`, {

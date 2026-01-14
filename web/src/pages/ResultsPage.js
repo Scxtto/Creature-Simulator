@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -177,6 +177,11 @@ const ResultsPage = () => {
 
   return (
     <div className="results-container">
+      <div className="page-actions">
+        <Link to="/" className="header-button">
+          Back to Setup
+        </Link>
+      </div>
       <h1>Simulation Results</h1>
       {isVideoVisible && (
         <div className="video-container">

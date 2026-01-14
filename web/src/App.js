@@ -6,8 +6,6 @@ import LoginPage from "./pages/LoginPage";
 import Header from "./pages/Header";
 import SettingsPage from "./pages/SettingsPage";
 import RegisterPage from "./pages/RegisterPage";
-import MfaSetupPage from "./pages/MfaSetupPage";
-import MfaVerifyPage from "./pages/MfaVerifyPage";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,6 +21,7 @@ const App = () => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserEmail("");
+    localStorage.removeItem("token");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("idToken");
     setIsAdmin(false); // Reset the admin status on logout
@@ -42,8 +41,6 @@ const App = () => {
           element={isAuthenticated ? <Navigate to="/" /> : <LoginPage onLogin={handleLogin} />}
         />
         <Route path="/register" element={isAuthenticated ? <Navigate to="/" /> : <RegisterPage />} />
-        <Route path="/mfa/setup" element={<MfaSetupPage />} />
-        <Route path="/mfa/verify" element={<MfaVerifyPage onLogin={handleLogin} />} />
         <Route path="/settings" element={isAdmin ? <SettingsPage /> : <Navigate to="/" />} />
       </Routes>
     </>

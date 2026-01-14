@@ -1,60 +1,52 @@
 const express = require("express");
 const router = express.Router();
-const {
-  CognitoIdentityProviderClient,
-  SignUpCommand,
-  AdminConfirmSignUpCommand,
-  AdminAddUserToGroupCommand,
-} = require("@aws-sdk/client-cognito-identity-provider");
-const { getClientId, getUserPoolId } = require("../utility/secretHandler");
+const fs = require("fs");
+const path = require("path");
 
-const client = new CognitoIdentityProviderClient({ region: "ap-southeast-2" });
+const accountsPath = path.join(__dirname, "../utility/accounts.json");
+
+function readAccounts() {
+  if (!fs.existsSync(accountsPath)) {
+    return [];
+  }
+
+  const raw = fs.readFileSync(accountsPath, "utf-8");
+  if (!raw.trim()) {
+    return [];
+  }
+
+  const parsed = JSON.parse(raw);
+  return Array.isArray(parsed) ? parsed : [];
+}
+
+function writeAccountsSafely(accounts) {
+  const dir = path.dirname(accountsPath);
+  const tempPath = path.join(dir, `accounts.${Date.now()}.tmp`);
+  fs.writeFileSync(tempPath, JSON.stringify(accounts, null, 2), "utf-8");
+  fs.renameSync(tempPath, accountsPath);
+}
 
 // Route to handle user registration and auto-confirm email
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const clientId = await getClientId();
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
 
-    // Step 1: Sign up the user
-    const signUpCommand = new SignUpCommand({
-      ClientId: clientId,
-      Username: email,
-      Password: password,
-      UserAttributes: [
-        {
-          Name: "email",
-          Value: email,
-        },
-      ],
-    });
+    const accounts = readAccounts();
+    if (accounts.find((user) => user.email === email)) {
+      return res.status(409).json({ message: "Account with this email already exists" });
+    }
 
-    const signUpResponse = await client.send(signUpCommand);
+    accounts.push({ email, password, role: "user", isAdmin: false });
+    writeAccountsSafely(accounts);
 
-    const poolId = await getUserPoolId();
-
-    // Step 2: Auto-confirm the user
-    const confirmCommand = new AdminConfirmSignUpCommand({
-      UserPoolId: poolId,
-      Username: email,
-    });
-
-    await client.send(confirmCommand);
-
-    // Step 3: Assign user to the group
-    const addToGroupCommand = new AdminAddUserToGroupCommand({
-      UserPoolId: poolId,
-      Username: email,
-      GroupName: "user",
-    });
-
-    await client.send(addToGroupCommand);
-
-    // Send success response back to client
     res.status(200).json({
-      message: "User registered and confirmed successfully",
-      userSub: signUpResponse.UserSub,
+      message: "User registered successfully",
+      email,
+      isAdmin: false,
     });
   } catch (err) {
     console.error("Error during registration:", err);

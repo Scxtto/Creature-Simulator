@@ -2,6 +2,21 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Demo auth setup
+
+Local demo accounts live at `publicMicro/utility/accounts.json` and are an array of:
+
+```
+{ "email": "user@example.com", "password": "plaintext", "role": "user|admin", "isAdmin": true|false }
+```
+
+Backend environment:
+- `JWT_SECRET` (required): HMAC secret used to sign/verify JWTs.
+- `JWT_DURATION_SECONDS` (optional): Token lifetime in seconds (default 3600).
+
+Frontend environment:
+- `REACT_APP_API_URI`: Base API URL used by the client (e.g., `http://localhost`).
+
 ## Available Scripts
 
 In the project directory, you can run:

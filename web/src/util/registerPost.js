@@ -15,10 +15,12 @@ export const registerPost = async (email, password) => {
     if (response.ok) {
       console.log("User registered successfully:", data);
       return data;
-    } else {
-      console.error("Error registering user:", data.message);
     }
+
+    console.error("Error registering user:", data.message);
+    return null;
   } catch (error) {
     console.error("Error during registration:", error);
+    return null;
   }
 };

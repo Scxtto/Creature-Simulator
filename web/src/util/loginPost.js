@@ -23,19 +23,11 @@ export const loginPost = async (email, password) => {
     const data = await response.json();
     console.log("Login response data:", data);
 
-    // Handle MFA setup or verification challenges
-    if (data.ChallengeName) {
-      console.log(`MFA challenge required: ${data.ChallengeName}`);
-
-      return {
-        ChallengeName: data.ChallengeName,
-        ChallengeParameters: data.ChallengeParameters,
-        Session: data.Session,
-        AccessToken: data.AccessToken,
-      };
-    }
-
-    return null;
+    return {
+      token: data.token,
+      isAdmin: data.isAdmin,
+      duration: data.duration,
+    };
   } catch (error) {
     console.error("Error posting login data:", error);
     return null;

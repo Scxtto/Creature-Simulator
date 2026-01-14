@@ -1,13 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {
-  CognitoIdentityProviderClient,
-  InitiateAuthCommand,
-} = require("@aws-sdk/client-cognito-identity-provider");
-const { getClientId, getUserPoolId } = require("../utility/secretHandler");
-const jwt = require("aws-jwt-verify");
+const jwt = require("jsonwebtoken");
 
-const client = new CognitoIdentityProviderClient({ region: "ap-southeast-2" });
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 
 router.post("/", async (req, res) => {
   if (!req.headers.authorization) {
@@ -24,19 +19,12 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ error: true, message: "Authorization header is malformed" });
     }
     const token = bearerToken[1];
-    //console.log("Token: ", token);
-    const client_id = await getClientId();
-    const pool_id = await getUserPoolId();
 
-    const idVerifier = jwt.CognitoJwtVerifier.create({
-      userPoolId: pool_id,
-      tokenUse: "id",
-      clientId: client_id,
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return res.status(200).json({
+      email: decoded.email,
+      isAdmin: decoded.isAdmin,
     });
-
-    const IdTokenVerifyResult = await idVerifier.verify(token);
-
-    return res.status(200).json({ email: IdTokenVerifyResult.email });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({ error: true, message: "JWT token has expired" });

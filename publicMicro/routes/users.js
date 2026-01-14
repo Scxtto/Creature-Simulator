@@ -1,10 +1,7 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
 const { authenticateJWT } = require("../middleware/authenticateJwt");
 const { authenticateEmail } = require("../middleware/authenticateEmail");
 const router = express.Router();
-const presetsFilePath = path.join(__dirname, "../storage/presets.json");
 const { addPreset, loadPresets } = require("../utility/dynamoHandler");
 
 // Route to save a preset

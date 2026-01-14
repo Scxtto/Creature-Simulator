@@ -2,10 +2,10 @@ export const loadPreset = async (user) => {
   const URL = process.env.REACT_APP_API_URI;
   const url = `${URL}:5443/users/${user}/loadPresets`;
 
-  const idToken = localStorage.getItem("idToken");
+  const token = localStorage.getItem("token");
   const headers = { "Content-Type": "application/json" };
-  if (idToken) {
-    headers["Authorization"] = `Bearer ${idToken}`;
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   try {
